@@ -12,7 +12,7 @@ import webbrowser
 from flask import Flask, jsonify, render_template, request, send_file, send_from_directory
 
 from wpcagent.engine import run_clone
-from wpcagent.site_builder import build_site
+from wpcagent.next_builder import build_site
 
 # حالت درون‌حافظه‌ای؛ برای استفاده شخصی/محلی کاملاً کافی است
 JOBS = {}
@@ -183,6 +183,7 @@ def create_app():
             "git_url": (request.form.get("git_url") or "").strip(),
             "git_token": (request.form.get("git_token") or "").strip(),
             "features": {"chat": request.form.get("chat") == "on"},
+            "auto_install": request.form.get("auto_install") == "on",
         }
         if not cfg["site_name"] or not cfg["project_dir"] or len(cfg["admin_password"]) < 4:
             return jsonify({"error": "invalid_form"}), 400
@@ -280,11 +281,10 @@ def create_app():
                 except Exception:  # noqa: BLE001
                     pass
             port = _free_port()
-            env = dict(os.environ)
-            env["PORT"] = str(port)
+            # سایت Next.js با npm run dev اجرا می‌شود (shell=True برای ویندوز/لینوکس)
             proc = subprocess.Popen(
-                [sys.executable, "app.py"],
-                cwd=project_dir, env=env,
+                "npm run dev -- -p " + str(port),
+                cwd=project_dir, shell=True,
                 stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
             )
             PREVIEWS[build_id] = {"proc": proc, "port": port, "project_dir": project_dir}
