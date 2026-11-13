@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}{{ heading }} — {{ site_name }}{% endblock %}
+{% block content %}
+<div class="layout">
+  <div>
+    <h1 style="font-size:1.5rem">{{ heading }} <small style="color:var(--muted);font-weight:400">({{ total }})</small></h1>
+    {% if items %}
+    <div class="grid" style="margin-top:16px">
+      {% for p in items %}
+      <article class="card">
+        {% if p['image'] %}<img class="thumb" src="{{ media_url(p['image']) }}" alt="{{ tr(p['title'], 'title', p) }}">{% endif %}
+        <h3><a href="/post/{{ p['slug'] }}">{{ tr(p['title'], 'title', p) }}</a></h3>
+        <p class="exc">{{ tr(p['excerpt'] or strip_html(p['content'], 140), 'excerpt', p) }}</p>
+        <a class="more" href="/post/{{ p['slug'] }}">{{ t('read_more') }} ←</a>
+      </article>
+      {% endfor %}
+    </div>
+    {% if base and total > per_page %}
+    <div class="pager">
+      {% if page_no > 1 %}<a href="{{ base }}?p={{ page_no - 1 }}">{{ t('prev') }}</a>{% endif %}
+      <span class="cur">{{ t('page') }} {{ page_no }}</span>
+      {% if page_no * per_page < total %}<a href="{{ base }}?p={{ page_no + 1 }}">{{ t('next') }}</a>{% endif %}
+    </div>
+    {% endif %}
+    {% else %}
+    <div class="card" style="margin-top:16px">{{ t('no_posts') }}</div>
+    {% endif %}
+  </div>
+  <aside>
+    <div class="side">
+      <h3>{{ t('search') }}</h3>
+      <form action="/search" method="get" role="search">
+        <input type="search" name="q" placeholder="{{ t('search_ph') }}" aria-label="{{ t('search') }}">
+      </form>
+    </div>
+    <div class="side">
+      <h3>{{ t('categories') }}</h3>
+      <ul>
+        {% for c in cats %}<li><a href="/category/{{ c['slug'] }}">{{ c['name'] }}</a> <span>{{ c['n'] }}</span></li>{% endfor %}
+      </ul>
+    </div>
+  </aside>
+</div>
+{% endblock %}

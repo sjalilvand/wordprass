@@ -1,0 +1,21 @@
+{% extends "admin/layout.html" %}
+{% block admin %}
+<div class="card">
+  <h2>Media files ({{ items | length }})</h2>
+  <table>
+    <tr><th>Preview</th><th>File</th><th>Size</th><th>URL</th></tr>
+    {% for r in items %}
+    <tr>
+      <td>{% if r['name'].lower().endswith(('.jpg','.jpeg','.png','.gif','.webp','.svg')) %}
+            <img src="{{ r['url'] }}" alt="{{ r['name'] }}" style="width:90px;border-radius:6px">
+          {% else %}&mdash;{% endif %}</td>
+      <td>{{ r['name'] }}</td>
+      <td>{{ '%.1f' | format(r['size'] / 1024) }} KB</td>
+      <td><a href="{{ r['url'] }}" target="_blank">{{ r['url'] }}</a></td>
+    </tr>
+    {% else %}
+    <tr><td colspan="4">No media</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

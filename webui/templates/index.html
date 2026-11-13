@@ -285,6 +285,10 @@
         <svg viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0 4.5-4.5M12 15l-4.5-4.5M4 19h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <span data-i="downloadZip"></span>
       </a>
+      <a class="btn" id="mirrorPreviewBtn" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M2 12s3.5-6.5 10-6.5S22 12 22 12s-3.5 6.5-10 6.5S2 12 2 12Z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="2.6" stroke="currentColor" stroke-width="1.8"/></svg>
+        <span data-i="previewMirror"></span>
+      </a>
       <button class="btn" id="newBtn" onclick="resetAll()">
         <svg viewBox="0 0 24 24" fill="none"><path d="M20 12a8 8 0 1 1-2.3-5.6M20 4v4h-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         <span data-i="newClone"></span>
@@ -319,6 +323,7 @@ python -m http.server 8080</code>
           <button onclick="copyCmd('cmd2')" title="copy"><svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M5 15V6a2 2 0 0 1 2-2h9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
         </div>
         <div class="d" style="margin-top:6px" data-i="g2url"></div>
+        <div class="d" style="margin-top:6px;color:var(--warn)" data-i="g2warn"></div>
       </div>
     </div>
 
@@ -340,6 +345,154 @@ python -m http.server 8080</code>
         <div class="d" data-i="g4d"></div>
         <div class="cmdbox"><code id="cmd4">output</code>
           <button onclick="copyCmd('cmd4')" title="copy"><svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M5 15V6a2 2 0 0 1 2-2h9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== step 4 : build dynamic site ===== -->
+  <div class="card hidden" id="buildCard">
+    <h3>
+      <svg viewBox="0 0 24 24" fill="none"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z" stroke="#818cf8" stroke-width="1.8" stroke-linejoin="round"/></svg>
+      <span data-i="bTitle"></span>
+    </h3>
+    <p class="d" data-i="bIntro"></p>
+
+    <div class="row2">
+      <div>
+        <label class="lbl" for="bName" data-i="bName"></label>
+        <input type="text" id="bName" autocomplete="off">
+      </div>
+      <div>
+        <label class="lbl" for="bTagline" data-i="bTagline"></label>
+        <input type="text" id="bTagline" autocomplete="off">
+      </div>
+    </div>
+
+    <label class="lbl" for="bDir" data-i="bDir"></label>
+    <input type="text" id="bDir" data-ph="bDirPh" spellcheck="false">
+
+    <label class="lbl" data-i="bLangs"></label>
+    <div class="opts">
+      <label class="chip"><input type="checkbox" id="langFa" checked><span>فارسی</span></label>
+      <label class="chip"><input type="checkbox" id="langEn"><span>English</span></label>
+      <label class="chip"><input type="checkbox" id="langAr"><span>عربي</span></label>
+    </div>
+
+    <div class="row2">
+      <div>
+        <label class="lbl" for="bAdminUser" data-i="bAdminUser"></label>
+        <input type="text" id="bAdminUser" value="admin">
+      </div>
+      <div>
+        <label class="lbl" for="bAdminPass" data-i="bAdminPass"></label>
+        <input type="password" id="bAdminPass" autocomplete="new-password">
+      </div>
+    </div>
+
+    <div class="row2">
+      <div>
+        <label class="lbl" for="bColor" data-i="bColor"></label>
+        <input type="color" id="bColor" value="#4f46e5" style="height:42px;padding:4px">
+      </div>
+      <div style="display:flex;align-items:flex-end">
+        <div class="opts" style="margin-bottom:10px">
+          <label class="chip"><input type="checkbox" id="bChat" checked><span data-i="bChatOpt"></span></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="row2">
+      <div>
+        <label class="lbl" for="bGit" data-i="bGit"></label>
+        <input type="text" id="bGit" data-ph="bGitPh" spellcheck="false" dir="ltr">
+      </div>
+      <div>
+        <label class="lbl" for="bToken" data-i="bToken"></label>
+        <input type="password" id="bToken" data-ph="bTokenPh" autocomplete="off" dir="ltr">
+      </div>
+    </div>
+
+    <button class="btn-main" id="buildBtn" onclick="startBuild()" data-i="bStart"></button>
+    <div class="note">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 9v4m0 4h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" stroke="#fbbf24" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <span data-i="bNote"></span>
+    </div>
+  </div>
+
+  <!-- ===== build progress ===== -->
+  <div class="card hidden" id="buildProgCard">
+    <div class="prog-head">
+      <div class="ring-wrap">
+        <svg width="132" height="132" viewBox="0 0 132 132">
+          <circle class="ring-bg" cx="66" cy="66" r="57"></circle>
+          <circle class="ring-fg" id="bRing" cx="66" cy="66" r="57" stroke-dasharray="358.1" stroke-dashoffset="358.1" stroke="#818cf8"></circle>
+        </svg>
+        <div class="ring-num"><div><span id="bPct">0</span>%<br><small id="bStage">…</small></div></div>
+      </div>
+      <div class="prog-side">
+        <div class="state" id="bState">…</div>
+      </div>
+    </div>
+    <div id="bLog"></div>
+  </div>
+
+  <!-- ===== build result ===== -->
+  <div class="card hidden" id="buildResultCard">
+    <div class="banner-ok" id="bOkBanner">
+      <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#34d399" opacity=".2"/><path d="m7.5 12.5 3 3 6-6" stroke="#34d399" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div>
+        <div class="t" data-i="bDoneTitle"></div>
+        <div class="d" data-i="bDoneMsg"></div>
+      </div>
+    </div>
+    <div class="err-banner hidden" id="bErrBanner"><span data-i="bFail"></span></div>
+
+    <label class="lbl" data-i="bStats"></label>
+    <div class="stats" id="bStatsBox"></div>
+
+    <div class="actions">
+      <button class="btn primary" id="bPreviewBtn" onclick="startPreview()">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M13 3 4 14h6l-1 7 9-11h-6l1-7Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+        <span data-i="bPreview"></span>
+      </button>
+      <a class="btn ghost hidden" id="bAdminLink" href="#" target="_blank" rel="noopener" data-i="bAdminOpen"></a>
+      <button class="btn" id="bBuildAgain" onclick="resetBuild()">
+        <span data-i="bAgain"></span>
+      </button>
+    </div>
+
+    <div class="step" style="border-top:1px dashed var(--line)">
+      <div class="stepn">1</div>
+      <div class="stepb">
+        <div class="t" data-i="bR1t"></div>
+        <div class="d" data-i="bR1d"></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="stepn">2</div>
+      <div class="stepb">
+        <div class="t" data-i="bR2t"></div>
+        <div class="d"><span id="bAdminCred"></span></div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="stepn">3</div>
+      <div class="stepb">
+        <div class="t" data-i="bR3t"></div>
+        <div class="d" data-i="bR3d"></div>
+        <div class="cmdbox"><code id="bCmdRun">run.bat</code>
+          <button onclick="copyCmd('bCmdRun')" title="copy"><svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M5 15V6a2 2 0 0 1 2-2h9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="stepn">4</div>
+      <div class="stepb">
+        <div class="t" data-i="bR4t"></div>
+        <div class="d"><span id="bGitStatus" data-i="bGitPending"></span></div>
+        <div class="cmdbox"><code id="bCmdDir">…</code>
+          <button onclick="copyCmd('bCmdDir')" title="copy"><svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M5 15V6a2 2 0 0 1 2-2h9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
         </div>
       </div>
     </div>
@@ -386,6 +539,54 @@ const I18N = {
     copy: "کپی", copied: "کپی شد",
     emptyUrl: "آدرس سایت را وارد کنید",
     notFound: "کار یافت نشد",
+    previewMirror: "پیش‌نمایش سایت (بدون http.server)",
+    g2warn: "توجه: حتماً داخل پوشه mirror اجرا کنید؛ اجرای این دستور در ریشه درایو (مثل D:\\) کل دیسک را روی شبکه باز می‌کند. راه ساده‌تر: دکمه «پیش‌نمایش سایت» بالا.",
+    bTitle: "مرحله بعد: ساخت سایت پویا از روی همین کلون",
+    bIntro: "ایجنت از محتوای کلون‌شده یک سایت کامل و پویا می‌سازد: پنل ادمین، چندزبانه (فا/EN/AR)، شخصی‌سازی، دسترس‌پذیری (توان‌خواه) و چت آنلاین.",
+    bName: "نام سایت", bTagline: "شعار/توضیح کوتاه",
+    bDir: "مسیر ساخت پروژه روی کامپیوتر شما",
+    bDirPh: "مثلاً D:\\Projects\\my-site",
+    bLangs: "زبان‌های سایت",
+    bAdminUser: "نام کاربری ادمین",
+    bAdminPass: "رمز ادمین (حداقل ۴ حرف)",
+    bColor: "رنگ اصلی قالب",
+    bChatOpt: "چت آنلاین درباره سایت",
+    bGit: "آدرس گیت برای کامیت (اختیاری)",
+    bGitPh: "https://github.com/user/repo",
+    bToken: "توکن گیت برای push (اختیاری)",
+    bTokenPh: "ghp_...",
+    bStart: "ساخت سایت پویا",
+    bNote: "توکن گیت فقط برای push استفاده می‌شود و در هیچ فایلی ذخیره نمی‌شود. رمز ادمین به‌صورت هش ذخیره می‌شود.",
+    bBuilding: "در حال ساخت سایت پویا…",
+    bDoneTitle: "سایت پویا ساخته شد",
+    bDoneMsg: "پروژه کامل آماده است؛ با دکمه زیر همان لحظه زنده می‌بینید.",
+    bFail: "ساخت سایت ناموفق بود. لاگ را ببینید.",
+    bStats: "آمار سایت ساخته‌شده",
+    bStPosts: "نوشته‌ها", bStPages: "برگه‌ها", bStTerms: "دسته/برچسب", bStComments: "دیدگاه‌ها", bStMedia: "فایل‌های رسانه",
+    bPreview: "اجرا و نمایش زنده سایت",
+    bAdminOpen: "بازکردن پنل ادمین",
+    bAgain: "بازسازی با تنظیمات جدید",
+    bR1t: "پیش‌نمایش زنده",
+    bR1d: "دکمه «اجرا و نمایش زنده سایت» سایت را همان لحظه روی کامپیوتر اجرا و در تب جدید باز می‌کند.",
+    bR2t: "ورود به پنل ادمین",
+    bR2d: "آدرس /admin روی همان سایت — با این مشخصات:",
+    bR3t: "اجرای مستقل در آینده",
+    bR3d: "در پوشه پروژه این فایل را اجرا کنید (دابل‌کلیک) یا در PowerShell:",
+    bR4t: "محل پروژه و وضعیت گیت",
+    bGitPending: "بدون push",
+    bGitPushed: "با موفقیت به گیت push شد ✓",
+    bGitFailed: "push ناموفق بود:",
+    bInvalidForm: "نام سایت، مسیر پروژه و رمز ادمین (۴ حرف) الزامی است",
+    bMsg: {
+      "build:copy": "کپی قالب پروژه…",
+      "build:media": "کپی رسانه‌ها…",
+      "build:db": "ساخت دیتابیس و انتقال محتوا…",
+      "build:verify": "بررسی سلامت پروژه…",
+      "build:git": "آماده‌سازی مخزن گیت…",
+      "build:git_push": "ارسال به گیت…",
+      "build:done": "ساخت سایت کامل شد",
+      "build_error": "خطا در ساخت سایت"
+    },
     stages: {
       detect: "تشخیص وردپرس",
       api: "دریافت محتوا",
@@ -448,6 +649,54 @@ const I18N = {
     copy: "Copy", copied: "Copied",
     emptyUrl: "Please enter the site URL",
     notFound: "Job not found",
+    previewMirror: "Preview site (no http.server needed)",
+    g2warn: "Note: run this only inside the mirror folder; running it at a drive root (e.g. D:\\) exposes your whole disk to the network. Easier: use the Preview button above.",
+    bTitle: "Next step: build a dynamic site from this clone",
+    bIntro: "The agent turns the cloned content into a full dynamic site: admin panel, multilingual (fa/EN/AR), personalization, accessibility and online chat.",
+    bName: "Site name", bTagline: "Tagline / short description",
+    bDir: "Project location on your computer",
+    bDirPh: "e.g. D:\\Projects\\my-site",
+    bLangs: "Site languages",
+    bAdminUser: "Admin username",
+    bAdminPass: "Admin password (min 4 chars)",
+    bColor: "Theme color",
+    bChatOpt: "Online chat about the site",
+    bGit: "Git URL to commit (optional)",
+    bGitPh: "https://github.com/user/repo",
+    bToken: "Git token for push (optional)",
+    bTokenPh: "ghp_...",
+    bStart: "Build the dynamic site",
+    bNote: "The Git token is only used for push and is never stored in any file. The admin password is stored hashed.",
+    bBuilding: "Building the dynamic site…",
+    bDoneTitle: "Dynamic site is ready",
+    bDoneMsg: "The full project is ready; run it live right now with the button below.",
+    bFail: "Build failed. Check the log.",
+    bStats: "Built site statistics",
+    bStPosts: "Posts", bStPages: "Pages", bStTerms: "Categories/Tags", bStComments: "Comments", bStMedia: "Media files",
+    bPreview: "Run & preview live",
+    bAdminOpen: "Open admin panel",
+    bAgain: "Rebuild with new settings",
+    bR1t: "Live preview",
+    bR1d: "The “Run & preview live” button starts the site on your computer instantly and opens it in a new tab.",
+    bR2t: "Log in to the admin panel",
+    bR2d: "Visit /admin on the same address — with these credentials:",
+    bR3t: "Run standalone later",
+    bR3d: "Inside the project folder run this file (double-click) or in PowerShell:",
+    bR4t: "Project location & Git status",
+    bGitPending: "No push",
+    bGitPushed: "Pushed to Git successfully ✓",
+    bGitFailed: "Push failed:",
+    bInvalidForm: "Site name, project path and admin password (4+ chars) are required",
+    bMsg: {
+      "build:copy": "Copying project template…",
+      "build:media": "Copying media files…",
+      "build:db": "Creating database and importing content…",
+      "build:verify": "Verifying the project…",
+      "build:git": "Preparing Git repository…",
+      "build:git_push": "Pushing to Git…",
+      "build:done": "Site build completed",
+      "build_error": "Build error"
+    },
     stages: {
       detect: "Detect WordPress",
       api: "Fetch content",
@@ -510,6 +759,54 @@ const I18N = {
     copy: "نسخ", copied: "تم النسخ",
     emptyUrl: "أدخل رابط الموقع",
     notFound: "المهمة غير موجودة",
+    previewMirror: "معاينة الموقع (بدون http.server)",
+    g2warn: "ملاحظة: نفّذ هذا الأمر داخل مجلد mirror فقط؛ تنفيذه في جذر القرص (مثل D:\\) يكشف كامل القرص للشبكة. الأسهل: زر «معاينة الموقع» أعلاه.",
+    bTitle: "الخطوة التالية: بناء موقع ديناميكي من هذا الاستنساخ",
+    bIntro: "يحوّل الوكيل المحتوى المستنسخ إلى موقع كامل و ديناميكي: لوحة إدارة، تعدد اللغات (فا/EN/AR)، تخصيص، إمكانية الوصول ودردشة مباشرة.",
+    bName: "اسم الموقع", bTagline: "شعار/وصف قصير",
+    bDir: "مسار بناء المشروع على حاسوبك",
+    bDirPh: "مثال D:\\Projects\\my-site",
+    bLangs: "لغات الموقع",
+    bAdminUser: "اسم مستخدم المدير",
+    bAdminPass: "كلمة مرور المدير (٤ أحرف على الأقل)",
+    bColor: "لون القالب الأساسي",
+    bChatOpt: "دردشة مباشرة حول الموقع",
+    bGit: "رابط Git للإرسال (اختياري)",
+    bGitPh: "https://github.com/user/repo",
+    bToken: "رمز Git للـ push (اختياري)",
+    bTokenPh: "ghp_...",
+    bStart: "بناء الموقع الديناميكي",
+    bNote: "يُستخدم رمز Git فقط للـ push ولا يُحفظ في أي ملف. كلمة مرور المدير تُحفظ مشفّرة.",
+    bBuilding: "جارٍ بناء الموقع الديناميكي…",
+    bDoneTitle: "تم بناء الموقع الديناميكي",
+    bDoneMsg: "المشروع الكامل جاهز؛ شغّله مباشرة الآن بالزر أدناه.",
+    bFail: "فشل البناء. راجع السجل.",
+    bStats: "إحصائيات الموقع المبني",
+    bStPosts: "المقالات", bStPages: "الصفحات", bStTerms: "تصنيف/وسوم", bStComments: "التعليقات", bStMedia: "ملفات الوسائط",
+    bPreview: "تشغيل ومعاينة مباشرة",
+    bAdminOpen: "فتح لوحة الإدارة",
+    bAgain: "إعادة البناء بإعدادات جديدة",
+    bR1t: "معاينة مباشرة",
+    bR1d: "زر «تشغيل ومعاينة مباشرة» يشغّل الموقع فوراً على حاسوبك ويفتحه في تب جديد.",
+    bR2t: "الدخول إلى لوحة الإدارة",
+    bR2d: "العنوان /admin على نفس الموقع — بهذه البيانات:",
+    bR3t: "التشغيل المستقل لاحقاً",
+    bR3d: "داخل مجلد المشروع شغّل هذا الملف (نقر مزدوج) أو في PowerShell:",
+    bR4t: "مسار المشروع وحالة Git",
+    bGitPending: "بدون push",
+    bGitPushed: "تم الإرسال إلى Git بنجاح ✓",
+    bGitFailed: "فشل الإرسال:",
+    bInvalidForm: "اسم الموقع ومسار المشروع وكلمة مرور المدير (٤ أحرف) مطلوبة",
+    bMsg: {
+      "build:copy": "نسخ قالب المشروع…",
+      "build:media": "نسخ ملفات الوسائط…",
+      "build:db": "إنشاء قاعدة البيانات ونقل المحتوى…",
+      "build:verify": "التحقق من سلامة المشروع…",
+      "build:git": "تجهيز مستودع Git…",
+      "build:git_push": "الإرسال إلى Git…",
+      "build:done": "اكتمل بناء الموقع",
+      "build_error": "خطأ في البناء"
+    },
     stages: {
       detect: "اكتشاف ووردبريس",
       api: "جلب المحتوى",
@@ -583,6 +880,8 @@ function setLang(lang) {
 function localizeMsg(key) {
   if (!key) return "";
   if (L.msg[key]) return L.msg[key];
+  if (L.bMsg && L.bMsg[key]) return L.bMsg[key];
+  if (key.startsWith("build_error:")) return (L.bMsg["build_error"] || key) + " — " + key.slice(12);
   if (key.startsWith("api:")) {
     const ep = key.slice(4);
     return (L.msg.api || "") + " " + (L.ep[ep] || ep);
@@ -729,12 +1028,21 @@ function showResult(s) {
     document.getElementById("dlBtn").classList.add("hidden");
   }
 
+  const mp = document.getElementById("mirrorPreviewBtn");
+  if (mp) mp.href = "/preview-mirror/" + currentJob + "/";
+
   const root = (s.root || "output").replace(/\\/g, "\\\\");
   document.getElementById("cmd1").textContent = root + (L.dir === "rtl" ? "\\mirror\\index.html" : "/mirror/index.html");
   document.getElementById("cmd2").textContent =
     'cd "' + root + (L.dir === "rtl" ? "\\mirror" : "/mirror") + '"\npython -m http.server 8080';
   document.getElementById("cmd3").textContent = root + (L.dir === "rtl" ? "\\wxr\\export.xml" : "/wxr/export.xml");
   document.getElementById("cmd4").textContent = root;
+
+  // کارت ساخت سایت پویا فقط پس از پایان کلون نمایش داده می‌شود
+  document.getElementById("buildCard").classList.remove("hidden");
+  if (!document.getElementById("bName").value) {
+    document.getElementById("bName").value = s.site_name || "";
+  }
 }
 
 function showError(key) {
@@ -755,7 +1063,166 @@ function resetAll() {
   document.getElementById("resultCard").classList.add("hidden");
   document.getElementById("guideCard").classList.add("hidden");
   document.getElementById("progCard").classList.add("hidden");
+  document.getElementById("buildCard").classList.add("hidden");
+  document.getElementById("buildProgCard").classList.add("hidden");
+  document.getElementById("buildResultCard").classList.add("hidden");
   document.getElementById("formCard").classList.remove("hidden");
+}
+
+/* ================== step 4 : build dynamic site ================== */
+let buildId = null;
+let buildTimer = null;
+let lastBuildMsg = "";
+
+function startBuild() {
+  if (!currentJob) return;
+  const name = document.getElementById("bName").value.trim();
+  const dir = document.getElementById("bDir").value.trim();
+  const pass = document.getElementById("bAdminPass").value;
+  if (!name || !dir || pass.length < 4) {
+    alert(L.bInvalidForm);
+    return;
+  }
+  const langs = [];
+  if (document.getElementById("langFa").checked) langs.push("fa");
+  if (document.getElementById("langEn").checked) langs.push("en");
+  if (document.getElementById("langAr").checked) langs.push("ar");
+  if (!langs.length) langs.push("fa");
+
+  const fd = new FormData();
+  fd.append("site_name", name);
+  fd.append("tagline", document.getElementById("bTagline").value);
+  fd.append("project_dir", dir);
+  fd.append("admin_user", document.getElementById("bAdminUser").value.trim() || "admin");
+  fd.append("admin_pass", pass);
+  fd.append("theme_color", document.getElementById("bColor").value);
+  fd.append("chat", document.getElementById("bChat").checked ? "on" : "");
+  fd.append("git_url", document.getElementById("bGit").value.trim());
+  fd.append("git_token", document.getElementById("bToken").value.trim());
+  langs.forEach(l => fd.append("langs", l));
+
+  document.getElementById("buildBtn").disabled = true;
+  document.getElementById("buildCard").classList.add("hidden");
+  document.getElementById("buildProgCard").classList.remove("hidden");
+  document.getElementById("buildResultCard").classList.add("hidden");
+  document.getElementById("bLog").textContent = "";
+  window._bpercent = 0;
+  bRenderRing(0);
+  document.getElementById("bState").textContent = L.bBuilding;
+
+  fetch("/build/" + currentJob, { method: "POST", body: fd })
+    .then(r => r.json())
+    .then(d => {
+      if (d.build_id) { buildId = d.build_id; pollBuild(); }
+      else alert(d.error === "invalid_form" ? L.bInvalidForm : L.bFail);
+    })
+    .catch(() => alert(L.bFail));
+}
+
+function pollBuild() {
+  buildTimer = setInterval(() => {
+    fetch("/status-build/" + buildId)
+      .then(r => r.json())
+      .then(d => updateBuildProgress(d))
+      .catch(() => {});
+  }, 1000);
+}
+
+function bRenderRing(p) {
+  const ring = document.getElementById("bRing");
+  const C = 2 * Math.PI * 57;
+  ring.setAttribute("stroke-dashoffset", String(C * (1 - p / 100)));
+  document.getElementById("bPct").textContent = p;
+}
+
+function updateBuildProgress(d) {
+  const p = d.percent || 0;
+  window._bpercent = p;
+  bRenderRing(p);
+  if (d.log && d.log.length) {
+    lastBuildMsg = d.log[d.log.length - 1];
+    document.getElementById("bStage").textContent = localizeMsg(lastBuildMsg);
+    document.getElementById("bState").textContent =
+      d.status === "running" ? (L.bBuilding + " — " + localizeMsg(lastBuildMsg))
+      : d.status === "done" ? L.bDoneTitle : L.bFail;
+    const lg = document.getElementById("bLog");
+    lg.innerHTML = d.log.map(k => '<div class="ln"><b>' + String(p).padStart(3) + '%</b> | ' +
+      localizeMsg(k).replace(/&/g, "&amp;").replace(/</g, "&lt;") + "</div>").join("");
+    lg.scrollTop = lg.scrollHeight;
+  }
+  if (d.done) {
+    clearInterval(buildTimer);
+    document.getElementById("buildBtn").disabled = false;
+    if (d.status === "done" && d.result) showBuildResult(d.result);
+    else {
+      document.getElementById("buildProgCard").classList.add("hidden");
+      document.getElementById("buildResultCard").classList.remove("hidden");
+      document.getElementById("bOkBanner").classList.add("hidden");
+      document.getElementById("bErrBanner").classList.remove("hidden");
+    }
+  }
+}
+
+function showBuildResult(r) {
+  document.getElementById("buildProgCard").classList.add("hidden");
+  document.getElementById("buildResultCard").classList.remove("hidden");
+  document.getElementById("bErrBanner").classList.add("hidden");
+  document.getElementById("bOkBanner").classList.remove("hidden");
+
+  const c = r.counts || {};
+  const rows = [
+    [c.posts || 0, L.bStPosts],
+    [c.pages || 0, L.bStPages],
+    [c.terms || 0, L.bStTerms],
+    [c.comments || 0, L.bStComments],
+    [r.media_copied || 0, L.bStMedia],
+  ];
+  document.getElementById("bStatsBox").innerHTML = rows.map(x =>
+    '<div class="stat"><div class="v">' + x[0] + '</div><div class="k">' + x[1] + "</div></div>"
+  ).join("");
+
+  document.getElementById("bCmdDir").textContent = r.project_dir || "";
+  document.getElementById("bCmdRun").textContent = (r.project_dir || "") + (L.dir === "rtl" ? "\\run.bat" : "/run.bat");
+  document.getElementById("bAdminCred").textContent = adminCredText();
+
+  const g = r.git;
+  const el = document.getElementById("bGitStatus");
+  if (!g) { el.textContent = L.bGitPending; el.style.color = "var(--muted)"; }
+  else if (g.pushed) { el.textContent = L.bGitPushed; el.style.color = "var(--ok)"; }
+  else {
+    el.textContent = L.bGitFailed + " " + (g.message || "");
+    el.style.color = "var(--err)";
+  }
+  window._previewUrl = null;
+}
+
+function adminCredText() {
+  const u = document.getElementById("bAdminUser").value.trim() || "admin";
+  const p = document.getElementById("bAdminPass").value;
+  return "URL: <admin address>/admin   —   " + u + " / " + p;
+}
+
+function startPreview() {
+  if (!buildId) return;
+  fetch("/preview/" + buildId, { method: "POST" })
+    .then(r => r.json())
+    .then(d => {
+      if (d.url) {
+        window._previewUrl = d.url;
+        window.open(d.url, "_blank");
+        const a = document.getElementById("bAdminLink");
+        a.href = d.url + "/admin";
+        a.classList.remove("hidden");
+      }
+    })
+    .catch(() => {});
+}
+
+function resetBuild() {
+  buildId = null;
+  document.getElementById("buildResultCard").classList.add("hidden");
+  document.getElementById("buildProgCard").classList.add("hidden");
+  document.getElementById("buildCard").classList.remove("hidden");
 }
 
 setLang(LANG);

@@ -1,0 +1,62 @@
+CREATE TABLE IF NOT EXISTS settings(k TEXT PRIMARY KEY, v TEXT);
+CREATE TABLE IF NOT EXISTS content(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  ctype TEXT NOT NULL,
+  title TEXT NOT NULL,
+  slug TEXT UNIQUE NOT NULL,
+  content TEXT DEFAULT '',
+  excerpt TEXT DEFAULT '',
+  status TEXT DEFAULT 'publish',
+  image TEXT DEFAULT '',
+  created_at TEXT DEFAULT '',
+  menu_order INTEGER DEFAULT 0
+);
+CREATE TABLE IF NOT EXISTS terms(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  ttype TEXT NOT NULL,
+  name TEXT NOT NULL,
+  slug TEXT UNIQUE NOT NULL
+);
+CREATE TABLE IF NOT EXISTS content_terms(content_id INTEGER, term_id INTEGER);
+CREATE TABLE IF NOT EXISTS comments(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  content_id INTEGER,
+  author TEXT DEFAULT '',
+  email TEXT DEFAULT '',
+  body TEXT DEFAULT '',
+  created_at TEXT DEFAULT '',
+  approved INTEGER DEFAULT 1
+);
+CREATE TABLE IF NOT EXISTS translations(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  object_id INTEGER,
+  lang TEXT,
+  field TEXT,
+  value TEXT
+);
+CREATE TABLE IF NOT EXISTS conversations(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT DEFAULT '',
+  created_at TEXT DEFAULT ''
+);
+CREATE TABLE IF NOT EXISTS chat_messages(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  conv_id INTEGER,
+  sender TEXT DEFAULT 'visitor',
+  body TEXT DEFAULT '',
+  created_at TEXT DEFAULT ''
+);
+CREATE TABLE IF NOT EXISTS contact_messages(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT,
+  email TEXT,
+  body TEXT,
+  created_at TEXT DEFAULT '',
+  is_read INTEGER DEFAULT 0
+);
+CREATE TABLE IF NOT EXISTS menu_items(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  title TEXT,
+  url TEXT,
+  position INTEGER DEFAULT 0
+);

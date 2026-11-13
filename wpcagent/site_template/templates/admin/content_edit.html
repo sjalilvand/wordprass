@@ -1,0 +1,58 @@
+{% extends "admin/layout.html" %}
+{% block admin %}
+<div class="card">
+  <h2>{{ 'New' if not item else 'Edit' }} {{ ctype }} #{{ item['id'] if item else '' }}</h2>
+  <form method="post">
+    <label>Title</label>
+    <input name="title" value="{{ item['title'] if item else '' }}" required>
+    {% if item %}
+    <label>Slug</label>
+    <input name="slug" value="{{ item['slug'] }}">
+    {% endif %}
+    <label>Excerpt</label>
+    <textarea name="excerpt" rows="2">{{ item['excerpt'] if item else '' }}</textarea>
+    <label>Content (HTML)</label>
+    <textarea name="content" rows="14">{{ item['content'] if item else '' }}</textarea>
+    {% if item %}
+    <label>Featured image filename (in /static/uploads)</label>
+    <input name="image" value="{{ item['image'] }}">
+    {% endif %}
+    <label>Status</label>
+    <select name="status">
+      <option value="publish" {{ 'selected' if item and item['status'] == 'publish' }}>publish</option>
+      <option value="draft" {{ 'selected' if item and item['status'] == 'draft' }}>draft</option>
+    </select>
+    <p><button class="btn" type="submit">Save</button>
+       {% if item %}<a class="btn ghost" href="/post/{{ item['slug'] }}" target="_blank">Preview ↗</a>{% endif %}</p>
+  </form>
+</div>
+
+{% if item %}
+<div class="card">
+  <h2>Translations (multilingual)</h2>
+  <p style="color:var(--muted);font-size:.9em">اگر فیلدی برای زبانی خالی بماند، متن اصلی نمایش داده می‌شود.
+     Leave a field empty to fall back to the original text.</p>
+  {% for lang in LANGS if lang != LANG %}
+  <details>
+    <summary style="font-weight:700;cursor:pointer;margin:10px 0">{{ lang }}</summary>
+    {% set tr_t = (translations | selectattr('lang','equalto',lang) | selectattr('field','equalto','title') | list | first) %}
+    {% set tr_e = (translations | selectattr('lang','equalto',lang) | selectattr('field','equalto','excerpt') | list | first) %}
+    <form method="post" action="/admin/content/{{ item['id'] }}/translate">
+      <input type="hidden" name="lang" value="{{ lang }}">
+      <label>Title ({{ lang }})</label>
+      <input name="value" value="{{ tr_t['value'] if tr_t else '' }}" placeholder="قیمت فقط برای {{ lang }} ذخیره می‌شود؛ فیلد field=title">
+      <input type="hidden" name="field" value="title">
+      <p><button class="btn ghost">Save {{ lang }} title</button></p>
+    </form>
+    <form method="post" action="/admin/content/{{ item['id'] }}/translate">
+      <input type="hidden" name="lang" value="{{ lang }}">
+      <input type="hidden" name="field" value="excerpt">
+      <label>Excerpt ({{ lang }})</label>
+      <textarea name="value" rows="2">{{ tr_e['value'] if tr_e else '' }}</textarea>
+      <p><button class="btn ghost">Save {{ lang }} excerpt</button></p>
+    </form>
+  </details>
+  {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

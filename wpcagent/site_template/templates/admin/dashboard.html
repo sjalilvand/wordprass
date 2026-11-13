@@ -1,0 +1,32 @@
+{% extends "admin/layout.html" %}
+{% block admin %}
+<div class="stats">
+  <div class="stat"><div class="v">{{ stats.posts }}</div><div class="k">Posts</div></div>
+  <div class="stat"><div class="v">{{ stats.pages }}</div><div class="k">Pages</div></div>
+  <div class="stat"><div class="v">{{ stats.comments }}</div><div class="k">Pending comments</div></div>
+  <div class="stat"><div class="v">{{ stats.chats }}</div><div class="k">Chat conversations</div></div>
+  <div class="stat"><div class="v">{{ stats.messages }}</div><div class="k">Unread messages</div></div>
+</div>
+
+<div class="card" style="margin-top:18px">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+    <h2 style="margin:0;font-size:1.1rem">Recent content</h2>
+    <div>
+      <a class="btn ghost" href="/admin/content/new?type=post">+ Post</a>
+      <a class="btn ghost" href="/admin/content/new?type=page">+ Page</a>
+    </div>
+  </div>
+  <table>
+    <tr><th>ID</th><th>Type</th><th>Title</th><th>Status</th><th></th></tr>
+    {% for r in recent %}
+    <tr>
+      <td>{{ r['id'] }}</td>
+      <td>{{ r['ctype'] }}</td>
+      <td><a href="/admin/content/{{ r['id'] }}/edit">{{ r['title'] }}</a></td>
+      <td>{{ r['status'] }}</td>
+      <td><a href="/post/{{ r['slug'] }}" target="_blank">view ↗</a></td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

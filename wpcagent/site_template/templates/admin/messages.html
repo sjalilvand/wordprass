@@ -1,0 +1,22 @@
+{% extends "admin/layout.html" %}
+{% block admin %}
+<div class="card">
+  <table>
+    <tr><th>ID</th><th>Name</th><th>Email</th><th>Message</th><th>Date</th><th></th></tr>
+    {% for r in items %}
+    <tr>
+      <td>{{ r['id'] }}</td>
+      <td>{{ r['name'] }}</td>
+      <td>{{ r['email'] or '—' }}</td>
+      <td>{{ r['body'][:200] }}</td>
+      <td>{{ r['created_at'] }}</td>
+      <td>
+        <form method="post" onsubmit="return confirm('Delete message?')"><input type="hidden" name="id" value="{{ r['id'] }}"><button class="btn danger">Delete</button></form>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="6">No messages</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}
