@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ایجنت کلون وردپرس</title>
+<style>
+  :root {
+    --bg: #0f172a; --card: #1e293b; --line: #334155;
+    --text: #e2e8f0; --muted: #94a3b8; --accent: #38bdf8; --accent2: #0ea5e9;
+    --ok: #34d399; --err: #f87171;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 24px; background: var(--bg); color: var(--text);
+    font-family: "Vazirmatn", Tahoma, "Segoe UI", sans-serif; line-height: 1.8;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  .sub { color: var(--muted); font-size: 13px; margin-bottom: 20px; }
+  .card {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 14px; padding: 20px; margin-bottom: 16px;
+  }
+  label { display: block; font-size: 13px; color: var(--muted); margin: 10px 0 6px; }
+  input[type=text] {
+    width: 100%; padding: 12px 14px; border-radius: 10px; font-size: 15px;
+    border: 1px solid var(--line); background: #0b1220; color: var(--text);
+    font-family: inherit; outline: none;
+  }
+  input[type=text]:focus { border-color: var(--accent); }
+  .opts { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 12px; }
+  .opt { display: flex; align-items: center; gap: 7px; font-size: 14px; }
+  .opt input { accent-color: var(--accent2); transform: scale(1.2); }
+  .row { display: flex; gap: 12px; }
+  .row > div { flex: 1; }
+  button {
+    width: 100%; margin-top: 18px; padding: 13px; border: 0; border-radius: 10px;
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    color: #04121d; font-size: 16px; font-weight: 700; cursor: pointer; font-family: inherit;
+  }
+  button:disabled { opacity: .55; cursor: wait; }
+  .bar { height: 10px; background: #0b1220; border-radius: 6px; overflow: hidden; margin: 8px 0; }
+  .bar > div { height: 100%; width: 0; background: linear-gradient(90deg, var(--accent2), var(--ok)); transition: width .5s; }
+  #log {
+    background: #0b1220; border: 1px solid var(--line); border-radius: 10px;
+    padding: 12px; height: 220px; overflow-y: auto; font-size: 13px;
+    color: var(--muted); white-space: pre-wrap; direction: rtl;
+  }
+  #log .pct { color: var(--accent); }
+  .result { display: none; margin-top: 14px; }
+  .result a {
+    display: inline-block; padding: 11px 20px; border-radius: 10px; text-decoration: none;
+    background: var(--ok); color: #052e1c; font-weight: 700;
+  }
+  .summary { font-size: 13px; color: var(--muted); margin-top: 10px; }
+  .hidden { display: none; }
+  .note { font-size: 12px; color: var(--muted); margin-top: 14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>ایجنت کلون سایت‌های وردپرس</h1>
+  <div class="sub">آدرس سایت وردپرسی را بدهید؛ محتوای کامل + آینه استاتیک + فایل WXR ساخته می‌شود</div>
+
+  <div class="card" id="formCard">
+    <label for="url">آدرس سایت (مثلاً https://example.com)</label>
+    <input type="text" id="url" placeholder="https://example.com" autocomplete="off">
+
+    <div class="row">
+      <div>
+        <label for="limit">حد آیتم هر بخش REST API (خالی = بدون حد)</label>
+        <input type="text" id="limit" placeholder="مثلاً 50">
+      </div>
+      <div>
+        <label for="max_pages">حداکثر صفحه برای آینه</label>
+        <input type="text" id="max_pages" value="100" placeholder="100">
+      </div>
+    </div>
+
+    <div class="opts">
+      <label class="opt"><input type="checkbox" id="mirror" checked> آینه استاتیک (HTML عین سایت)</label>
+      <label class="opt"><input type="checkbox" id="api" checked> محتوای REST API</label>
+      <label class="opt"><input type="checkbox" id="wxr" checked> فایل WXR برای ایمپورت وردپرس</label>
+      <label class="opt"><input type="checkbox" id="zip" checked> ساخت ZIP</label>
+    </div>
+
+    <button id="startBtn" onclick="startJob()">شروع کلون</button>
+    <div class="note">توجه: این ابزار فقط برای سایت‌هایی که مالک آن‌ها هستید یا اجازه کلون‌کردن دارید استفاده شود.</div>
+  </div>
+
+  <div class="card hidden" id="progCard">
+    <div id="statusLine">در حال اجرا...</div>
+    <div class="bar"><div id="barFill"></div></div>
+    <div id="log"></div>
+    <div class="result" id="resultBox">
+      <a id="dlBtn" href="#" download>دانلود فایل ZIP نتیجه</a>
+      <div class="summary" id="summaryBox"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+let timer = null;
+function startJob() {
+  const url = document.getElementById("url").value.trim();
+  if (!url) { alert("آدرس سایت را وارد کنید"); return; }
+  const fd = new FormData();
+  fd.append("url", url);
+  fd.append("limit", document.getElementById("limit").value);
+  fd.append("max_pages", document.getElementById("max_pages").value);
+  fd.append("mirror", document.getElementById("mirror").checked ? "on" : "");
+  fd.append("api", document.getElementById("api").checked ? "on" : "");
+  fd.append("wxr", document.getElementById("wxr").checked ? "on" : "");
+  fd.append("zip", document.getElementById("zip").checked ? "on" : "");
+  document.getElementById("startBtn").disabled = true;
+  document.getElementById("progCard").classList.remove("hidden");
+  fetch("/start", { method: "POST", body: fd })
+    .then(r => r.json())
+    .then(d => { if (d.job_id) poll(d.job_id); else alert(d.error || "خطا"); });
+}
+function poll(id) {
+  timer = setInterval(() => {
+    fetch("/status/" + id).then(r => r.json()).then(d => {
+      document.getElementById("barFill").style.width = (d.percent || 0) + "%";
+      document.getElementById("statusLine").textContent =
+        d.status === "running" ? ("در حال اجرا — " + (d.percent || 0) + "٪")
+        : d.status === "done" ? "کلون کامل شد" : "خطا رخ داد";
+      const lg = document.getElementById("log");
+      lg.textContent = d.log.join("\n");
+      lg.scrollTop = lg.scrollHeight;
+      if (d.done) {
+        clearInterval(timer);
+        document.getElementById("startBtn").disabled = false;
+        if (d.status === "done") {
+          document.getElementById("resultBox").style.display = "block";
+          document.getElementById("dlBtn").href = "/download/" + id;
+        }
+      }
+    });
+  }, 1200);
+}
+</script>
+</body>
+</html>
