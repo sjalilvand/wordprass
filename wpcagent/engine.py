@@ -65,7 +65,7 @@ def run_clone(
     session = build_session()
 
     # ۱) تشخیص
-    cb(5, "تشخیص وردپرس بودن سایت...")
+    cb(5, "detect")
     info = detect_wordpress(session, base_url)
     summary["site"] = info.get("site", {})
     summary["wp_version"] = info.get("wp_version")
@@ -84,10 +84,11 @@ def run_clone(
     data = {}
     counts = {}
     if info["is_wp"] and do_api:
-        cb(10, "دریافت محتوا از REST API...")
+        cb(10, "api")
         try:
             data, counts = scrape_site(session, info, out_dir,
-                                       limit=limit, delay=delay)
+                                       limit=limit, delay=delay,
+                                       progress_cb=lambda p, m: cb(p, m))
         except Exception as e:  # noqa: BLE001
             log.warning("[!] خطا در دریافت REST API: %s", e)
             errors.append("api: " + str(e))
@@ -97,7 +98,7 @@ def run_clone(
     # ۳) رسانه‌ها
     media_stats = {"count": 0, "bytes": 0}
     if info["is_wp"] and do_media and data.get("media"):
-        cb(30, "دانلود رسانه‌ها...")
+        cb(30, "media")
         try:
             _map, ok_count, total_bytes = download_media(
                 session, data.get("media"), os.path.join(out_dir, "media"),
@@ -110,7 +111,7 @@ def run_clone(
     # ۴) آینه استاتیک
     mirror_summary = {}
     if do_mirror:
-        cb(45, "ساخت آینه استاتیک سایت...")
+        cb(46, "mirror")
         try:
             mirror_summary = crawl_mirror(
                 session, base_url, os.path.join(out_dir, "mirror"),
@@ -125,7 +126,7 @@ def run_clone(
     # ۵) WXR
     wxr_items = 0
     if info["is_wp"] and do_wxr and data:
-        cb(90, "ساخت فایل WXR وردپرس...")
+        cb(90, "wxr")
         try:
             wxr_dir = os.path.join(out_dir, "wxr")
             os.makedirs(wxr_dir, exist_ok=True)
@@ -136,7 +137,7 @@ def run_clone(
     summary["wxr_items"] = wxr_items
 
     # ۶) گزارش
-    cb(95, "تولید گزارش...")
+    cb(95, "report")
     try:
         report_path = build_report(out_dir, info, counts, mirror_summary,
                                    wxr_items, media_stats)
@@ -148,7 +149,7 @@ def run_clone(
 
     # ۷) ZIP
     if do_zip:
-        cb(97, "ساخت فایل ZIP...")
+        cb(97, "zip")
         try:
             zip_path = make_zip(out_dir)
             summary["paths"]["zip"] = zip_path
@@ -160,7 +161,7 @@ def run_clone(
     total_items = sum(counts.values())
     summary["counts"] = counts
     summary["ok"] = True
-    cb(100, "کلون کامل شد")
+    cb(100, "done")
     log.info("-" * 60)
     log.info("پایان کار | آیتم‌های API: %s | صفحات آینه: %s | فایل‌ها: %s | رسانه: %s (%s)",
              total_items, mirror_summary.get("pages", 0),

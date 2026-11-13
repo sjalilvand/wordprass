@@ -57,7 +57,7 @@ def download_media(session, media_items, media_dir, delay=0.35, progress_cb=None
             continue
         if progress_cb:
             progress_cb(int(i * 100 / max(1, len(items))),
-                        f"دانلود رسانه {i} از {len(items)}")
+                        f"media:{i}/{len(items)}")
         path_part = urlparse(url).path
         fname = os.path.basename(path_part)
         if not fname:

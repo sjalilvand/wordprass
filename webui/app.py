@@ -31,7 +31,7 @@ def create_app():
         from flask import request
         url = (request.form.get("url") or "").strip()
         if not url:
-            return jsonify({"error": "آدرس سایت را وارد کنید"}), 400
+            return jsonify({"error": "empty_url"}), 400
         if "://" not in url:
             url = "https://" + url
 
@@ -91,13 +91,24 @@ def create_app():
         with JOBS_LOCK:
             job = JOBS.get(job_id)
             if not job:
-                return jsonify({"error": "یافت نشد"}), 404
-            return jsonify({
+                return jsonify({"error": "not_found"}), 404
+            payload = {
                 "status": job["status"],
                 "percent": job["percent"],
-                "log": job["log"][-12:],
+                "log": job["log"][-14:],
                 "done": job["status"] != "running",
-            })
+            }
+            if job["status"] == "done" and job.get("summary"):
+                s = job["summary"]
+                paths = s.get("paths") or {}
+                payload["summary"] = {
+                    "counts": s.get("counts") or {},
+                    "mirror": s.get("mirror") or {},
+                    "wxr_items": s.get("wxr_items", 0),
+                    "root": paths.get("root"),
+                    "zip_ready": bool(paths.get("zip")),
+                }
+            return jsonify(payload)
 
     @app.route("/download/<job_id>")
     def download(job_id):

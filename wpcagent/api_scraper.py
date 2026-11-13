@@ -117,7 +117,7 @@ def discover_custom_taxonomies(session, api_root):
     return result
 
 
-def scrape_site(session, site_info, out_dir, limit=None, delay=0.3):
+def scrape_site(session, site_info, out_dir, limit=None, delay=0.3, progress_cb=None):
     """
     دریافت کل محتوای ساختاریافته سایت وردپرسی.
     خروجی: (data dict, counts dict)
@@ -134,8 +134,11 @@ def scrape_site(session, site_info, out_dir, limit=None, delay=0.3):
 
     log.info("[..] دریافت محتوا از REST API: %s", api_root)
 
-    for key, rest_base in CORE_ENDPOINTS:
+    total_eps = len(CORE_ENDPOINTS)
+    for idx, (key, rest_base) in enumerate(CORE_ENDPOINTS):
         items = fetch_endpoint(session, api_root, rest_base, limit=limit, delay=delay)
+        if progress_cb:
+            progress_cb(10 + int((idx + 1) * 18 / total_eps), "api:" + rest_base)
         if items is None:
             log.debug("  endpoint %s در دسترس نیست", rest_base)
             data[key] = []

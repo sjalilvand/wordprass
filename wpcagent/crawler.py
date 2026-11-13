@@ -150,8 +150,8 @@ class MirrorCrawler:
             if SKIP_PATH_RE.search(urlparse(url).path or ""):
                 continue
             if self.progress_cb:
-                self.progress_cb(30 + int(len(self.pages) * 20 / max(1, self.max_pages)),
-                                 f"دریافت صفحه {len(self.pages) + 1}")
+                self.progress_cb(46 + int(len(self.pages) * 14 / max(1, self.max_pages)),
+                                 f"mirror_page:{len(self.pages) + 1}")
             r = self._get(url)
             polite_sleep(self.delay)
             if r is None or r.status_code != 200:
@@ -276,8 +276,8 @@ class MirrorCrawler:
             if urlparse(url).path.lower().endswith(ASSET_SKIP_EXT):
                 continue
             if self.progress_cb:
-                self.progress_cb(50 + int(len(self.assets) * 10 / max(1, self.max_assets)),
-                                 f"دریافت فایل {len(self.assets) + 1}")
+                self.progress_cb(60 + int(len(self.assets) * 28 / max(1, self.max_assets)),
+                                 f"mirror_asset:{len(self.assets) + 1}")
             r = self._get(url)
             polite_sleep(self.delay)
             if r is None or r.status_code != 200:

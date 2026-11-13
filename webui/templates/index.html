@@ -3,108 +3,632 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ایجنت کلون وردپرس</title>
+<title>WordPress Clone Agent</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0f172a; --card: #1e293b; --line: #334155;
-    --text: #e2e8f0; --muted: #94a3b8; --accent: #38bdf8; --accent2: #0ea5e9;
-    --ok: #34d399; --err: #f87171;
+    --bg1: #0b1220; --bg2: #101b33;
+    --card: rgba(30, 41, 59, .82); --card-solid: #1e293b;
+    --line: rgba(148, 163, 184, .22);
+    --text: #e6edf7; --muted: #94a3b8;
+    --accent: #38bdf8; --accent2: #0ea5e9; --accent3: #818cf8;
+    --ok: #34d399; --err: #f87171; --warn: #fbbf24;
+    --radius: 16px;
   }
   * { box-sizing: border-box; }
+  html, body { min-height: 100%; }
   body {
-    margin: 0; padding: 24px; background: var(--bg); color: var(--text);
-    font-family: "Vazirmatn", Tahoma, "Segoe UI", sans-serif; line-height: 1.8;
+    margin: 0; padding: 20px 16px 44px;
+    background:
+      radial-gradient(1100px 500px at 85% -8%, rgba(56,189,248,.16), transparent 60%),
+      radial-gradient(900px 460px at 8% 108%, rgba(129,140,248,.14), transparent 60%),
+      linear-gradient(160deg, var(--bg1), var(--bg2));
+    color: var(--text);
+    font-family: "Vazirmatn", Tahoma, "Segoe UI", sans-serif;
+    line-height: 1.9; font-size: 15px;
   }
-  .wrap { max-width: 760px; margin: 0 auto; }
-  h1 { font-size: 22px; margin: 0 0 4px; }
-  .sub { color: var(--muted); font-size: 13px; margin-bottom: 20px; }
+  .wrap { max-width: 860px; margin: 0 auto; }
+
+  /* ---------- top bar ---------- */
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .logo {
+    width: 44px; height: 44px; border-radius: 13px; flex: 0 0 auto;
+    background: linear-gradient(135deg, var(--accent2), var(--accent3));
+    display: grid; place-items: center;
+    box-shadow: 0 6px 20px rgba(14,165,233,.35);
+  }
+  .logo svg { width: 26px; height: 26px; }
+  .brand h1 { font-size: 19px; margin: 0; letter-spacing: .2px; }
+  .brand .tag { font-size: 12px; color: var(--muted); margin: 0; }
+  .langs { display: flex; gap: 6px; background: rgba(15,23,42,.6); padding: 5px; border-radius: 12px; border: 1px solid var(--line); }
+  .langs button {
+    all: unset; cursor: pointer; padding: 5px 13px; border-radius: 9px;
+    font-size: 13px; font-weight: 600; color: var(--muted); font-family: inherit;
+    transition: all .2s;
+  }
+  .langs button.on { background: linear-gradient(135deg, var(--accent2), var(--accent)); color: #04121d; }
+
   .card {
     background: var(--card); border: 1px solid var(--line);
-    border-radius: 14px; padding: 20px; margin-bottom: 16px;
+    border-radius: var(--radius); padding: 22px; margin-bottom: 16px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 12px 40px rgba(2,6,23,.45);
   }
-  label { display: block; font-size: 13px; color: var(--muted); margin: 10px 0 6px; }
+  .hidden { display: none !important; }
+  label.lbl { display: block; font-size: 13px; color: var(--muted); margin: 14px 0 6px; font-weight: 500; }
   input[type=text] {
-    width: 100%; padding: 12px 14px; border-radius: 10px; font-size: 15px;
-    border: 1px solid var(--line); background: #0b1220; color: var(--text);
-    font-family: inherit; outline: none;
+    width: 100%; padding: 13px 15px; border-radius: 12px; font-size: 15px;
+    border: 1px solid var(--line); background: rgba(11,18,32,.75); color: var(--text);
+    font-family: inherit; outline: none; transition: border-color .2s, box-shadow .2s;
   }
-  input[type=text]:focus { border-color: var(--accent); }
-  .opts { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 12px; }
-  .opt { display: flex; align-items: center; gap: 7px; font-size: 14px; }
-  .opt input { accent-color: var(--accent2); transform: scale(1.2); }
-  .row { display: flex; gap: 12px; }
-  .row > div { flex: 1; }
-  button {
-    width: 100%; margin-top: 18px; padding: 13px; border: 0; border-radius: 10px;
-    background: linear-gradient(135deg, var(--accent2), var(--accent));
-    color: #04121d; font-size: 16px; font-weight: 700; cursor: pointer; font-family: inherit;
+  input[type=text]:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(56,189,248,.15); }
+
+  .opts { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+  .chip {
+    display: flex; align-items: center; gap: 8px; padding: 9px 14px;
+    border: 1px solid var(--line); border-radius: 12px; font-size: 13.5px;
+    background: rgba(11,18,32,.55); cursor: pointer; user-select: none;
+    transition: all .2s;
   }
-  button:disabled { opacity: .55; cursor: wait; }
-  .bar { height: 10px; background: #0b1220; border-radius: 6px; overflow: hidden; margin: 8px 0; }
-  .bar > div { height: 100%; width: 0; background: linear-gradient(90deg, var(--accent2), var(--ok)); transition: width .5s; }
+  .chip:hover { border-color: rgba(56,189,248,.55); }
+  .chip input { accent-color: var(--accent2); transform: scale(1.15); }
+  .chip:has(input:checked) { border-color: rgba(56,189,248,.7); background: rgba(14,165,233,.12); }
+
+  .row2 { display: flex; gap: 12px; flex-wrap: wrap; }
+  .row2 > div { flex: 1; min-width: 220px; }
+
+  .btn-main {
+    width: 100%; margin-top: 20px; padding: 14px; border: 0; border-radius: 13px;
+    background: linear-gradient(135deg, var(--accent2), var(--accent3));
+    color: #04121d; font-size: 16px; font-weight: 800; cursor: pointer;
+    font-family: inherit; transition: transform .15s, opacity .2s;
+    box-shadow: 0 8px 24px rgba(14,165,233,.35);
+  }
+  .btn-main:hover { transform: translateY(-1px); }
+  .btn-main:disabled { opacity: .55; cursor: wait; transform: none; }
+  .note { font-size: 12px; color: var(--muted); margin-top: 14px; display: flex; gap: 7px; align-items: center; }
+  .note svg { width: 15px; height: 15px; flex: 0 0 auto; }
+
+  /* ---------- progress ---------- */
+  .prog-head { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
+  .ring-wrap { position: relative; width: 132px; height: 132px; flex: 0 0 auto; }
+  .ring-wrap svg { transform: rotate(-90deg); }
+  .ring-bg { fill: none; stroke: rgba(148,163,184,.18); stroke-width: 11; }
+  .ring-fg { fill: none; stroke: url(#grad); stroke-width: 11; stroke-linecap: round; transition: stroke-dashoffset .6s ease; }
+  .ring-num {
+    position: absolute; inset: 0; display: grid; place-items: center;
+    font-size: 30px; font-weight: 800; letter-spacing: .5px;
+  }
+  .ring-num small { font-size: 13px; font-weight: 500; color: var(--muted); }
+  .prog-side { flex: 1; min-width: 240px; }
+  .prog-side .state { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+  .prog-side .url { font-size: 12.5px; color: var(--muted); direction: ltr; text-align: start; word-break: break-all; }
+
+  .stages { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .stage {
+    display: flex; align-items: center; gap: 7px; font-size: 12.5px;
+    padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line);
+    color: var(--muted); background: rgba(11,18,32,.5); transition: all .3s;
+  }
+  .stage .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--line); }
+  .stage.active { color: #04121d; font-weight: 700; background: linear-gradient(135deg, var(--accent), var(--accent3)); border-color: transparent; }
+  .stage.active .dot { background: #04121d; }
+  .stage.past { color: var(--ok); border-color: rgba(52,211,153,.4); }
+  .stage.past .dot { background: var(--ok); }
+
   #log {
-    background: #0b1220; border: 1px solid var(--line); border-radius: 10px;
-    padding: 12px; height: 220px; overflow-y: auto; font-size: 13px;
-    color: var(--muted); white-space: pre-wrap; direction: rtl;
+    background: rgba(11,18,32,.8); border: 1px solid var(--line); border-radius: 12px;
+    padding: 12px 14px; height: 190px; overflow-y: auto; font-size: 13px;
+    color: var(--muted); margin-top: 16px; white-space: pre-wrap;
   }
-  #log .pct { color: var(--accent); }
-  .result { display: none; margin-top: 14px; }
-  .result a {
-    display: inline-block; padding: 11px 20px; border-radius: 10px; text-decoration: none;
-    background: var(--ok); color: #052e1c; font-weight: 700;
+  #log .ln b { color: var(--accent); font-weight: 600; }
+
+  /* ---------- result ---------- */
+  .banner-ok {
+    display: flex; align-items: center; gap: 12px; padding: 15px 18px; border-radius: 13px;
+    background: linear-gradient(135deg, rgba(52,211,153,.16), rgba(52,211,153,.06));
+    border: 1px solid rgba(52,211,153,.45); margin-bottom: 16px;
   }
-  .summary { font-size: 13px; color: var(--muted); margin-top: 10px; }
-  .hidden { display: none; }
-  .note { font-size: 12px; color: var(--muted); margin-top: 14px; }
+  .banner-ok svg { width: 30px; height: 30px; flex: 0 0 auto; }
+  .banner-ok .t { font-size: 16px; font-weight: 800; color: var(--ok); }
+  .banner-ok .d { font-size: 13px; color: var(--muted); }
+
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+  .stat { background: rgba(11,18,32,.6); border: 1px solid var(--line); border-radius: 13px; padding: 13px 14px; text-align: center; }
+  .stat .v { font-size: 21px; font-weight: 800; color: var(--accent); }
+  .stat .k { font-size: 12px; color: var(--muted); }
+
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 12px;
+    text-decoration: none; font-weight: 700; font-size: 14px; font-family: inherit;
+    border: 1px solid var(--line); background: rgba(11,18,32,.6); color: var(--text); cursor: pointer;
+    transition: all .2s;
+  }
+  .btn:hover { border-color: rgba(56,189,248,.6); }
+  .btn.primary { background: linear-gradient(135deg, var(--ok), #10b981); color: #052e1c; border: 0; }
+  .btn svg { width: 17px; height: 17px; }
+
+  .guide h3 { margin: 6px 0 14px; font-size: 16px; display: flex; align-items: center; gap: 9px; }
+  .guide h3 svg { width: 20px; height: 20px; }
+  .step { display: flex; gap: 13px; padding: 13px 0; border-top: 1px dashed var(--line); }
+  .step:first-of-type { border-top: 0; }
+  .stepn {
+    width: 28px; height: 28px; border-radius: 50%; flex: 0 0 auto;
+    background: linear-gradient(135deg, var(--accent2), var(--accent3));
+    color: #04121d; font-weight: 800; display: grid; place-items: center; font-size: 14px;
+  }
+  .stepb { flex: 1; min-width: 0; }
+  .stepb .t { font-weight: 700; font-size: 14px; }
+  .stepb .d { font-size: 13px; color: var(--muted); margin: 3px 0 8px; }
+  .cmdbox {
+    display: flex; align-items: stretch; gap: 0; background: #0a0f1e;
+    border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
+  }
+  .cmdbox code {
+    flex: 1; padding: 9px 12px; font-family: Consolas, Monaco, monospace; font-size: 12.5px;
+    color: #7dd3fc; direction: ltr; text-align: left; white-space: pre-wrap; word-break: break-all;
+  }
+  .cmdbox button {
+    all: unset; cursor: pointer; padding: 0 13px; display: grid; place-items: center;
+    background: rgba(56,189,248,.1); border-inline-start: 1px solid var(--line); transition: background .2s;
+  }
+  .cmdbox button:hover { background: rgba(56,189,248,.22); }
+  .cmdbox svg { width: 15px; height: 15px; }
+  .copybtn { font-size: 11.5px; }
+
+  .err-banner {
+    display: flex; align-items: center; gap: 12px; padding: 15px 18px; border-radius: 13px;
+    background: rgba(248,113,113,.1); border: 1px solid rgba(248,113,113,.4); color: var(--err);
+    font-weight: 700;
+  }
+
+  @media (max-width: 560px) {
+    .prog-head { gap: 14px; }
+    .ring-wrap { width: 104px; height: 104px; }
+    .ring-num { font-size: 24px; }
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>ایجنت کلون سایت‌های وردپرس</h1>
-  <div class="sub">آدرس سایت وردپرسی را بدهید؛ محتوای کامل + آینه استاتیک + فایل WXR ساخته می‌شود</div>
 
-  <div class="card" id="formCard">
-    <label for="url">آدرس سایت (مثلاً https://example.com)</label>
-    <input type="text" id="url" placeholder="https://example.com" autocomplete="off">
-
-    <div class="row">
-      <div>
-        <label for="limit">حد آیتم هر بخش REST API (خالی = بدون حد)</label>
-        <input type="text" id="limit" placeholder="مثلاً 50">
+  <div class="top">
+    <div class="brand">
+      <div class="logo">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M3 5.5A2.5 2.5 0 0 1 5.5 3h13A2.5 2.5 0 0 1 21 5.5v9a2.5 2.5 0 0 1-2.5 2.5H12l-4.2 3.6c-.7.6-1.8.1-1.8-.8V17h-.5A2.5 2.5 0 0 1 3 14.5v-9Z" fill="#04121d"/><circle cx="8" cy="10" r="1.4" fill="#0ea5e9"/><circle cx="12" cy="10" r="1.4" fill="#0ea5e9"/><circle cx="16" cy="10" r="1.4" fill="#0ea5e9"/></svg>
       </div>
       <div>
-        <label for="max_pages">حداکثر صفحه برای آینه</label>
-        <input type="text" id="max_pages" value="100" placeholder="100">
+        <h1 id="t-title" data-i="title">ایجنت کلون سایت‌های وردپرس</h1>
+        <p class="tag" id="t-tagline" data-i="tagline">…</p>
+      </div>
+    </div>
+    <div class="langs">
+      <button id="lang-fa" onclick="setLang('fa')">فارسی</button>
+      <button id="lang-en" onclick="setLang('en')">EN</button>
+      <button id="lang-ar" onclick="setLang('ar')">عربي</button>
+    </div>
+  </div>
+
+  <!-- ===== screen 1 : form ===== -->
+  <div class="card" id="formCard">
+    <label class="lbl" for="url" data-i="urlLabel"></label>
+    <input type="text" id="url" data-ph="urlPh" autocomplete="off" spellcheck="false">
+
+    <div class="row2">
+      <div>
+        <label class="lbl" for="limit" data-i="optLimit"></label>
+        <input type="text" id="limit" data-ph="optLimitPh" inputmode="numeric">
+      </div>
+      <div>
+        <label class="lbl" for="max_pages" data-i="optPages"></label>
+        <input type="text" id="max_pages" value="100" inputmode="numeric">
       </div>
     </div>
 
     <div class="opts">
-      <label class="opt"><input type="checkbox" id="mirror" checked> آینه استاتیک (HTML عین سایت)</label>
-      <label class="opt"><input type="checkbox" id="api" checked> محتوای REST API</label>
-      <label class="opt"><input type="checkbox" id="wxr" checked> فایل WXR برای ایمپورت وردپرس</label>
-      <label class="opt"><input type="checkbox" id="zip" checked> ساخت ZIP</label>
+      <label class="chip"><input type="checkbox" id="mirror" checked><span data-i="optMirror"></span></label>
+      <label class="chip"><input type="checkbox" id="api" checked><span data-i="optApi"></span></label>
+      <label class="chip"><input type="checkbox" id="wxr" checked><span data-i="optWxr"></span></label>
+      <label class="chip"><input type="checkbox" id="zip" checked><span data-i="optZip"></span></label>
     </div>
 
-    <button id="startBtn" onclick="startJob()">شروع کلون</button>
-    <div class="note">توجه: این ابزار فقط برای سایت‌هایی که مالک آن‌ها هستید یا اجازه کلون‌کردن دارید استفاده شود.</div>
+    <button class="btn-main" id="startBtn" onclick="startJob()" data-i="start"></button>
+    <div class="note">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 9v4m0 4h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z" stroke="#fbbf24" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <span data-i="note"></span>
+    </div>
   </div>
 
+  <!-- ===== screen 2 : progress ===== -->
   <div class="card hidden" id="progCard">
-    <div id="statusLine">در حال اجرا...</div>
-    <div class="bar"><div id="barFill"></div></div>
+    <div class="prog-head">
+      <div class="ring-wrap">
+        <svg width="132" height="132" viewBox="0 0 132 132">
+          <defs>
+            <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#38bdf8"/><stop offset="100%" stop-color="#818cf8"/>
+            </linearGradient>
+          </defs>
+          <circle class="ring-bg" cx="66" cy="66" r="57"></circle>
+          <circle class="ring-fg" id="ringFg" cx="66" cy="66" r="57" stroke-dasharray="358.1" stroke-dashoffset="358.1"></circle>
+        </svg>
+        <div class="ring-num"><div><span id="pctNum">0</span>%<br><small id="pctStage">…</small></div></div>
+      </div>
+      <div class="prog-side">
+        <div class="state" id="stateLine">…</div>
+        <div class="url" id="targetUrl"></div>
+      </div>
+    </div>
+    <div class="stages" id="stages"></div>
     <div id="log"></div>
-    <div class="result" id="resultBox">
-      <a id="dlBtn" href="#" download>دانلود فایل ZIP نتیجه</a>
-      <div class="summary" id="summaryBox"></div>
+  </div>
+
+  <!-- ===== screen 3 : result ===== -->
+  <div class="card hidden" id="resultCard">
+    <div class="banner-ok" id="okBanner">
+      <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#34d399" opacity=".2"/><path d="m7.5 12.5 3 3 6-6" stroke="#34d399" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <div>
+        <div class="t" data-i="doneTitle"></div>
+        <div class="d" data-i="doneMsg"></div>
+      </div>
+    </div>
+    <div class="err-banner hidden" id="errBanner"><span data-i="error"></span></div>
+
+    <label class="lbl" data-i="stats"></label>
+    <div class="stats" id="statsBox"></div>
+
+    <div class="actions">
+      <a class="btn primary" id="dlBtn" href="#" download>
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0 4.5-4.5M12 15l-4.5-4.5M4 19h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span data-i="downloadZip"></span>
+      </a>
+      <button class="btn" id="newBtn" onclick="resetAll()">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M20 12a8 8 0 1 1-2.3-5.6M20 4v4h-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span data-i="newClone"></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="card hidden guide" id="guideCard">
+    <h3>
+      <svg viewBox="0 0 24 24" fill="none"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19a1 1 0 0 1 1 1v14.5a1.5 1.5 0 0 1-1.5 1.5H6.5A2.5 2.5 0 0 1 4 17.5v-12Z" stroke="#38bdf8" stroke-width="1.7"/><path d="M8 8h8M8 12h8M8 16h5" stroke="#38bdf8" stroke-width="1.7" stroke-linecap="round"/></svg>
+      <span data-i="guideTitle"></span>
+    </h3>
+
+    <div class="step">
+      <div class="stepn">1</div>
+      <div class="stepb">
+        <div class="t" data-i="g1t"></div>
+        <div class="d" data-i="g1d"></div>
+        <div class="cmdbox"><code id="cmd1">mirror\index.html</code>
+          <button onclick="copyCmd('cmd1')" title="copy"><svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M5 15V6a2 2 0 0 1 2-2h9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="stepn">2</div>
+      <div class="stepb">
+        <div class="t" data-i="g2t"></div>
+        <div class="d" data-i="g2d"></div>
+        <div class="cmdbox"><code id="cmd2">cd "<mirror path>"
+python -m http.server 8080</code>
+          <button onclick="copyCmd('cmd2')" title="copy"><svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M5 15V6a2 2 0 0 1 2-2h9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+        </div>
+        <div class="d" style="margin-top:6px" data-i="g2url"></div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="stepn">3</div>
+      <div class="stepb">
+        <div class="t" data-i="g3t"></div>
+        <div class="d" data-i="g3d"></div>
+        <div class="cmdbox"><code id="cmd3">wxr\export.xml</code>
+          <button onclick="copyCmd('cmd3')" title="copy"><svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M5 15V6a2 2 0 0 1 2-2h9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="stepn">4</div>
+      <div class="stepb">
+        <div class="t" data-i="g4t"></div>
+        <div class="d" data-i="g4d"></div>
+        <div class="cmdbox"><code id="cmd4">output</code>
+          <button onclick="copyCmd('cmd4')" title="copy"><svg viewBox="0 0 24 24" fill="none"><rect x="9" y="9" width="11" height="11" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M5 15V6a2 2 0 0 1 2-2h9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
 <script>
-let timer = null;
+/* ================== i18n ================== */
+const I18N = {
+  fa: {
+    dir: "rtl",
+    title: "ایجنت کلون سایت‌های وردپرس",
+    tagline: "آدرس بدهید، درصد پیشرفت را ببینید، سایت کلون‌شده را اجرا کنید",
+    urlLabel: "آدرس سایت وردپرسی موردنظر",
+    urlPh: "https://example.com",
+    optLimit: "حد آیتم هر بخش API (خالی = بدون حد)",
+    optLimitPh: "مثلاً 50",
+    optPages: "حداکثر صفحات آینه",
+    optMirror: "آینه استاتیک (HTML عین سایت)",
+    optApi: "محتوای REST API",
+    optWxr: "فایل WXR برای ایمپورت وردپرس",
+    optZip: "ساخت فایل ZIP",
+    start: "شروع کلون",
+    note: "این ابزار فقط برای سایت‌هایی که مالک آن‌ها هستید یا اجازه کلون‌کردن دارید استفاده شود.",
+    running: "در حال کلون‌کردن",
+    doneTitle: "کلون کامل شد",
+    doneMsg: "سایت با موفقیت کلون شد؛ طبق مراحل زیر آن را اجرا کنید.",
+    error: "خطایی رخ داد. جزئیات را در لاگ ببینید و دوباره تلاش کنید.",
+    stats: "آمار کلون",
+    stPosts: "نوشته‌ها", stPages: "برگه‌ها", stMedia: "رسانه‌ها", stCat: "دسته‌ها",
+    stMirror: "صفحات آینه", stAssets: "فایل‌های آینه", stWxr: "آیتم‌های WXR",
+    downloadZip: "دانلود فایل ZIP نتیجه",
+    newClone: "کلون جدید",
+    guideTitle: "راهنمای اجرای سایت کلون‌شده",
+    g1t: "بازکردن سریع سایت (بدون نیاز به اینترنت)",
+    g1d: "به پوشه خروجی بروید و فایل زیر را در مرورگر باز کنید (دابل‌کلیک):",
+    g2t: "اجرا به‌صورت سرور محلی (پیشنهادی)",
+    g2d: "در پوشه mirror این دستور را اجرا کنید:",
+    g2url: "سپس در مرورگر به آدرس http://localhost:8080 بروید.",
+    g3t: "انتقال کامل به وردپرس جدید (با همه قابلیت‌ها)",
+    g3d: "در پیشخوان وردپرس جدید: ابزارها → درون‌ریزی (Import) → WordPress؛ افزونه WordPress Importer را نصب کنید، فایل زیر را بارگذاری و گزینه Download and import file attachments را فعال کنید:",
+    g4t: "محل ذخیره همه فایل‌ها",
+    g4d: "کل خروجی (آینه، رسانه‌ها، XML و گزارش) در این پوشه است:",
+    copy: "کپی", copied: "کپی شد",
+    emptyUrl: "آدرس سایت را وارد کنید",
+    notFound: "کار یافت نشد",
+    stages: {
+      detect: "تشخیص وردپرس",
+      api: "دریافت محتوا",
+      media: "دانلود رسانه‌ها",
+      mirror: "ساخت آینه استاتیک",
+      wxr: "ساخت فایل وردپرس",
+      report: "گزارش نهایی",
+      zip: "فشرده‌سازی ZIP"
+    },
+    ep: {
+      posts: "نوشته‌ها", pages: "برگه‌ها", media: "رسانه‌ها", categories: "دسته‌ها",
+      tags: "برچسب‌ها", comments: "دیدگاه‌ها", users: "کاربران", menus: "منوها",
+      "menu-items": "آیتم‌های منو"
+    },
+    msg: {
+      detect: "تشخیص وردپرس بودن سایت…",
+      api: "دریافت محتوا از REST API…",
+      media: "دانلود رسانه‌ها…",
+      mirror: "خزیدن صفحات سایت…",
+      wxr: "ساخت فایل WXR وردپرس…",
+      report: "تولید گزارش…",
+      zip: "ساخت فایل ZIP…",
+      done: "کلون کامل شد"
+    }
+  },
+  en: {
+    dir: "ltr",
+    title: "WordPress Site Clone Agent",
+    tagline: "Enter a URL, watch live progress, then run your cloned site",
+    urlLabel: "WordPress site URL",
+    urlPh: "https://example.com",
+    optLimit: "Items limit per API section (empty = unlimited)",
+    optLimitPh: "e.g. 50",
+    optPages: "Max mirror pages",
+    optMirror: "Static mirror (exact HTML copy)",
+    optApi: "REST API content",
+    optWxr: "WXR file for WordPress import",
+    optZip: "Create ZIP file",
+    start: "Start cloning",
+    note: "Use this tool only for sites you own or have permission to copy.",
+    running: "Cloning in progress",
+    doneTitle: "Clone completed",
+    doneMsg: "The site was cloned successfully. Follow the steps below to run it.",
+    error: "Something went wrong. Check the log and try again.",
+    stats: "Clone statistics",
+    stPosts: "Posts", stPages: "Pages", stMedia: "Media", stCat: "Categories",
+    stMirror: "Mirror pages", stAssets: "Mirror files", stWxr: "WXR items",
+    downloadZip: "Download result ZIP",
+    newClone: "New clone",
+    guideTitle: "How to run the cloned site",
+    g1t: "Quick open (offline)",
+    g1d: "Go to the output folder and open this file in your browser (double-click):",
+    g2t: "Run as a local server (recommended)",
+    g2d: "Inside the mirror folder run:",
+    g2url: "Then open http://localhost:8080 in your browser.",
+    g3t: "Move to a new WordPress (full capabilities)",
+    g3d: "In the new WordPress dashboard: Tools → Import → WordPress; install the WordPress Importer plugin, upload this file and enable Download and import file attachments:",
+    g4t: "Where everything is saved",
+    g4d: "All outputs (mirror, media, XML, report) are in this folder:",
+    copy: "Copy", copied: "Copied",
+    emptyUrl: "Please enter the site URL",
+    notFound: "Job not found",
+    stages: {
+      detect: "Detect WordPress",
+      api: "Fetch content",
+      media: "Download media",
+      mirror: "Build static mirror",
+      wxr: "Build WordPress XML",
+      report: "Final report",
+      zip: "ZIP packaging"
+    },
+    ep: {
+      posts: "posts", pages: "pages", media: "media", categories: "categories",
+      tags: "tags", comments: "comments", users: "users", menus: "menus",
+      "menu-items": "menu items"
+    },
+    msg: {
+      detect: "Detecting WordPress…",
+      api: "Fetching content from REST API…",
+      media: "Downloading media…",
+      mirror: "Crawling site pages…",
+      wxr: "Building WordPress WXR file…",
+      report: "Generating report…",
+      zip: "Creating ZIP file…",
+      done: "Clone completed"
+    }
+  },
+  ar: {
+    dir: "rtl",
+    title: "وكيل استنساخ مواقع ووردبريس",
+    tagline: "أدخل الرابط، تابع نسبة التقدم، ثم شغّل الموقع المستنسخ",
+    urlLabel: "رابط موقع ووردبريس",
+    urlPh: "https://example.com",
+    optLimit: "حد العناصر لكل قسم API (فارغ = بلا حد)",
+    optLimitPh: "مثال 50",
+    optPages: "أقصى عدد صفحات المرآة",
+    optMirror: "مرآة ثابتة (نسخة HTML مطابقة)",
+    optApi: "محتوى REST API",
+    optWxr: "ملف WXR للاستيراد إلى ووردبريس",
+    optZip: "إنشاء ملف ZIP",
+    start: "بدء الاستنساخ",
+    note: "استخدم هذه الأداة فقط للمواقع التي تملكها أو لديك إذن بنسخها.",
+    running: "جارٍ الاستنساخ",
+    doneTitle: "تم الاستنساخ بنجاح",
+    doneMsg: "تم استنساخ الموقع بنجاح؛ اتبع الخطوات التالية لتشغيله.",
+    error: "حدث خطأ. راجع السجل وحاول مجدداً.",
+    stats: "إحصائيات الاستنساخ",
+    stPosts: "المقالات", stPages: "الصفحات", stMedia: "الوسائط", stCat: "التصنيفات",
+    stMirror: "صفحات المرآة", stAssets: "ملفات المرآة", stWxr: "عناصر WXR",
+    downloadZip: "تنزيل ملف ZIP للنتيجة",
+    newClone: "استنساخ جديد",
+    guideTitle: "دليل تشغيل الموقع المستنسخ",
+    g1t: "فتح سريع (بدون إنترنت)",
+    g1d: "اذهب إلى مجلد المخرجات وافتح هذا الملف في المتصفح (نقر مزدوج):",
+    g2t: "التشغيل كخادم محلي (موصى به)",
+    g2d: "داخل مجلد mirror نفّذ هذا الأمر:",
+    g2url: "ثم افتح العنوان http://localhost:8080 في المتصفح.",
+    g3t: "النقل إلى ووردبريس جديد (بكل الإمكانيات)",
+    g3d: "في لوحة ووردبريس الجديد: الأدوات → استيراد → WordPress؛ ثبّت إضافة WordPress Importer، ارفع هذا الملف وفعّل خيار Download and import file attachments:",
+    g4t: "مكان حفظ الملفات",
+    g4d: "كل المخرجات (المرآة، الوسائط، XML والتقرير) في هذا المجلد:",
+    copy: "نسخ", copied: "تم النسخ",
+    emptyUrl: "أدخل رابط الموقع",
+    notFound: "المهمة غير موجودة",
+    stages: {
+      detect: "اكتشاف ووردبريس",
+      api: "جلب المحتوى",
+      media: "تنزيل الوسائط",
+      mirror: "بناء المرآة الثابتة",
+      wxr: "بناء ملف ووردبريس",
+      report: "التقرير النهائي",
+      zip: "ضغط ZIP"
+    },
+    ep: {
+      posts: "المقالات", pages: "الصفحات", media: "الوسائط", categories: "التصنيفات",
+      tags: "الوسوم", comments: "التعليقات", users: "المستخدمون", menus: "القوائم",
+      "menu-items": "عناصر القوائم"
+    },
+    msg: {
+      detect: "اكتشاف ووردبريس…",
+      api: "جلب المحتوى من REST API…",
+      media: "تنزيل الوسائط…",
+      mirror: "زحف صفحات الموقع…",
+      wxr: "بناء ملف WXR…",
+      report: "إنشاء التقرير…",
+      zip: "إنشاء ملف ZIP…",
+      done: "اكتمل الاستنساخ"
+    }
+  }
+};
+
+const STAGES = [
+  { key: "detect", from: 0,  to: 8  },
+  { key: "api",    from: 8,  to: 30 },
+  { key: "media",  from: 30, to: 46 },
+  { key: "mirror", from: 46, to: 88 },
+  { key: "wxr",    from: 88, to: 94 },
+  { key: "report", from: 94, to: 97 },
+  { key: "zip",    from: 97, to: 100.1 }
+];
+
+let LANG = localStorage.getItem("wpc_lang") || "fa";
+let L = I18N[LANG];
+let currentJob = null;
+let pollTimer = null;
+let lastMsgKey = "";
+
+/* ================== language ================== */
+function setLang(lang) {
+  LANG = lang; L = I18N[lang];
+  localStorage.setItem("wpc_lang", lang);
+  document.documentElement.lang = lang;
+  document.documentElement.dir = L.dir;
+  document.querySelectorAll("[data-i]").forEach(el => {
+    const k = el.getAttribute("data-i");
+    if (L[k] !== undefined) el.textContent = L[k];
+  });
+  document.querySelectorAll("[data-ph]").forEach(el => {
+    const k = el.getAttribute("data-ph");
+    if (L[k] !== undefined) el.placeholder = L[k];
+  });
+  document.title = L.title;
+  ["fa", "en", "ar"].forEach(x => {
+    document.getElementById("lang-" + x).classList.toggle("on", x === lang);
+  });
+  renderStages();
+  if (lastMsgKey) document.getElementById("stateLine").textContent = localizeMsg(lastMsgKey);
+  if (currentJob === null) {
+    document.getElementById("pctStage").textContent = "";
+    document.getElementById("stateLine").textContent = "";
+  }
+}
+
+/* ================== helpers ================== */
+function localizeMsg(key) {
+  if (!key) return "";
+  if (L.msg[key]) return L.msg[key];
+  if (key.startsWith("api:")) {
+    const ep = key.slice(4);
+    return (L.msg.api || "") + " " + (L.ep[ep] || ep);
+  }
+  if (key.startsWith("media:")) {
+    const n = key.slice(6);
+    return (L.msg.media || "") + " " + n;
+  }
+  if (key.startsWith("mirror_page:")) return (L.stages.mirror || "") + " — #" + key.split(":")[1];
+  if (key.startsWith("mirror_asset:")) return (L.stages.mirror || "") + " — #" + key.split(":")[1];
+  return key;
+}
+
+function stageOf(p) {
+  for (const s of STAGES) if (p < s.to) return s.key;
+  return "zip";
+}
+
+function renderStages() {
+  const p = window._percent || 0;
+  const cur = stageOf(p);
+  const box = document.getElementById("stages");
+  box.innerHTML = "";
+  for (const s of STAGES) {
+    const d = document.createElement("div");
+    d.className = "stage" + (s.key === cur ? " active" : (p >= s.to ? " past" : ""));
+    d.innerHTML = '<span class="dot"></span>' + (L.stages[s.key] || s.key);
+    box.appendChild(d);
+  }
+}
+
+function copyCmd(id) {
+  const txt = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(txt).then(() => {
+    const btns = document.querySelectorAll(".cmdbox button");
+    btns.forEach(() => {});
+    const box = document.getElementById(id).parentElement.querySelector("button");
+    if (box) { box.title = L.copied; box.style.background = "rgba(52,211,153,.25)"; }
+    setTimeout(() => { if (box) box.style.background = ""; }, 900);
+  });
+}
+
+/* ================== flow ================== */
 function startJob() {
   const url = document.getElementById("url").value.trim();
-  if (!url) { alert("آدرس سایت را وارد کنید"); return; }
+  if (!url) { alert(L.emptyUrl); return; }
   const fd = new FormData();
   fd.append("url", url);
   fd.append("limit", document.getElementById("limit").value);
@@ -113,33 +637,128 @@ function startJob() {
   fd.append("api", document.getElementById("api").checked ? "on" : "");
   fd.append("wxr", document.getElementById("wxr").checked ? "on" : "");
   fd.append("zip", document.getElementById("zip").checked ? "on" : "");
+
   document.getElementById("startBtn").disabled = true;
+  document.getElementById("formCard").classList.add("hidden");
   document.getElementById("progCard").classList.remove("hidden");
+  document.getElementById("resultCard").classList.add("hidden");
+  document.getElementById("guideCard").classList.add("hidden");
+  document.getElementById("log").textContent = "";
+  document.getElementById("targetUrl").textContent = url;
+  window._percent = 0;
+  renderStages();
+
   fetch("/start", { method: "POST", body: fd })
     .then(r => r.json())
-    .then(d => { if (d.job_id) poll(d.job_id); else alert(d.error || "خطا"); });
+    .then(d => {
+      if (d.job_id) { currentJob = d.job_id; poll(); }
+      else { showError(d.error || "error"); }
+    })
+    .catch(() => showError("error"));
 }
-function poll(id) {
-  timer = setInterval(() => {
-    fetch("/status/" + id).then(r => r.json()).then(d => {
-      document.getElementById("barFill").style.width = (d.percent || 0) + "%";
-      document.getElementById("statusLine").textContent =
-        d.status === "running" ? ("در حال اجرا — " + (d.percent || 0) + "٪")
-        : d.status === "done" ? "کلون کامل شد" : "خطا رخ داد";
-      const lg = document.getElementById("log");
-      lg.textContent = d.log.join("\n");
-      lg.scrollTop = lg.scrollHeight;
-      if (d.done) {
-        clearInterval(timer);
-        document.getElementById("startBtn").disabled = false;
-        if (d.status === "done") {
-          document.getElementById("resultBox").style.display = "block";
-          document.getElementById("dlBtn").href = "/download/" + id;
-        }
-      }
-    });
-  }, 1200);
+
+function poll() {
+  pollTimer = setInterval(() => {
+    fetch("/status/" + currentJob)
+      .then(r => r.json())
+      .then(d => updateProgress(d))
+      .catch(() => {});
+  }, 1100);
 }
+
+function updateProgress(d) {
+  const p = d.percent || 0;
+  window._percent = p;
+  const ring = document.getElementById("ringFg");
+  const C = 2 * Math.PI * 57;
+  ring.setAttribute("stroke-dashoffset", String(C * (1 - p / 100)));
+  document.getElementById("pctNum").textContent = p;
+  document.getElementById("pctStage").textContent =
+    d.status === "running" ? (L.stages[stageOf(p)] || "") : L.msg.done;
+
+  renderStages();
+
+  if (d.log && d.log.length) {
+    lastMsgKey = d.log[d.log.length - 1];
+    document.getElementById("stateLine").textContent =
+      d.status === "running" ? (L.running + " — " + localizeMsg(lastMsgKey))
+      : d.status === "done" ? L.msg.done : L.error;
+    const lg = document.getElementById("log");
+    lg.innerHTML = d.log.map(k => '<div class="ln"><b>' + String(p).padStart(3) + '%</b> | ' +
+      localizeMsg(k).replace(/&/g, "&amp;").replace(/</g, "&lt;") + "</div>").join("");
+    lg.scrollTop = lg.scrollHeight;
+  }
+
+  if (d.done) {
+    clearInterval(pollTimer);
+    document.getElementById("startBtn").disabled = false;
+    if (d.status === "done" && d.summary) {
+      showResult(d.summary);
+    } else {
+      showError("error");
+    }
+  }
+}
+
+function showResult(s) {
+  document.getElementById("progCard").classList.add("hidden");
+  document.getElementById("resultCard").classList.remove("hidden");
+  document.getElementById("guideCard").classList.remove("hidden");
+  document.getElementById("errBanner").classList.add("hidden");
+  document.getElementById("okBanner").classList.remove("hidden");
+
+  const c = s.counts || {}, m = s.mirror || {};
+  const rows = [
+    [c.posts || 0, L.stPosts],
+    [c.pages || 0, L.stPages],
+    [c.media || 0, L.stMedia],
+    [c.categories || 0, L.stCat],
+    [m.pages || 0, L.stMirror],
+    [m.assets || 0, L.stAssets],
+    [s.wxr_items || 0, L.stWxr],
+  ];
+  const box = document.getElementById("statsBox");
+  box.innerHTML = rows.map(r =>
+    '<div class="stat"><div class="v">' + r[0] + '</div><div class="k">' + r[1] + "</div></div>"
+  ).join("");
+
+  if (s.zip_ready) {
+    document.getElementById("dlBtn").href = "/download/" + currentJob;
+    document.getElementById("dlBtn").classList.remove("hidden");
+  } else {
+    document.getElementById("dlBtn").classList.add("hidden");
+  }
+
+  const root = (s.root || "output").replace(/\\/g, "\\\\");
+  document.getElementById("cmd1").textContent = root + (L.dir === "rtl" ? "\\mirror\\index.html" : "/mirror/index.html");
+  document.getElementById("cmd2").textContent =
+    'cd "' + root + (L.dir === "rtl" ? "\\mirror" : "/mirror") + '"\npython -m http.server 8080';
+  document.getElementById("cmd3").textContent = root + (L.dir === "rtl" ? "\\wxr\\export.xml" : "/wxr/export.xml");
+  document.getElementById("cmd4").textContent = root;
+}
+
+function showError(key) {
+  clearInterval(pollTimer);
+  document.getElementById("startBtn").disabled = false;
+  document.getElementById("progCard").classList.add("hidden");
+  document.getElementById("resultCard").classList.remove("hidden");
+  document.getElementById("guideCard").classList.add("hidden");
+  document.getElementById("okBanner").classList.add("hidden");
+  document.getElementById("errBanner").classList.remove("hidden");
+  const msg = L[key] || L.error;
+  document.querySelector("#errBanner span").textContent = msg;
+}
+
+function resetAll() {
+  currentJob = null;
+  window._percent = 0;
+  document.getElementById("resultCard").classList.add("hidden");
+  document.getElementById("guideCard").classList.add("hidden");
+  document.getElementById("progCard").classList.add("hidden");
+  document.getElementById("formCard").classList.remove("hidden");
+}
+
+setLang(LANG);
 </script>
 </body>
 </html>
